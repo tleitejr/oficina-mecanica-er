@@ -1,0 +1,108 @@
+erDiagram
+    CLIENTE {
+        int cod_cliente PK
+        string nome
+        string endereco
+        string telefone
+        string email
+        string cpf_cnpj
+    }
+
+    VEICULO {
+        string placa PK
+        string chassi
+        string marca
+        string modelo
+        int ano
+        string cor
+        int cod_cliente FK
+        int cod_equipe FK
+    }
+
+    EQUIPE {
+        int cod_equipe PK
+        string nome
+        string turno
+    }
+
+    MECANICO {
+        int cod_mecanico PK
+        string nome
+        string endereco
+        string especialidade
+    }
+
+    EQUIPE_MECANICO {
+        int cod_equipe FK
+        int cod_mecanico FK
+        date data_entrada
+    }
+
+    SERVICO {
+        int cod_servico PK
+        string descricao
+        int cod_tabela_ref FK
+        int tempo_estimado
+    }
+
+    TABELA_REFERENCIA_MAO_OBRA {
+        int cod_tabela_ref PK
+        string descricao
+        decimal valor_hora
+        date data_vigencia
+    }
+
+    PECA {
+        int cod_peca PK
+        string descricao
+        string fabricante
+        decimal valor_unitario_referencia
+        int estoque
+    }
+
+    ORDEM_SERVICO {
+        int numero_os PK
+        date data_emissao
+        date data_entrega_prevista
+        decimal valor_total
+        string status
+        date data_conclusao
+        boolean autorizado
+        date data_autorizacao
+        string cod_veiculo FK
+        int cod_equipe FK
+        int cod_cliente_autorizador FK
+    }
+
+    OS_SERVICO {
+        int numero_os FK
+        int cod_servico FK
+        int quantidade
+        decimal valor_unitario_aplicado
+        decimal subtotal
+    }
+
+    OS_PECA {
+        int numero_os FK
+        int cod_peca FK
+        int quantidade
+        decimal valor_unitario_aplicado
+        decimal subtotal
+    }
+
+    CLIENTE ||--o{ VEICULO : possui
+    CLIENTE |o--o{ ORDEM_SERVICO : autoriza
+    EQUIPE ||--o{ VEICULO : atende
+    EQUIPE ||--o{ ORDEM_SERVICO : executa
+    VEICULO ||--o{ ORDEM_SERVICO : recebe
+
+    EQUIPE ||--o{ EQUIPE_MECANICO : possui
+    MECANICO ||--o{ EQUIPE_MECANICO : compoe
+
+    ORDEM_SERVICO ||--o{ OS_SERVICO : possui
+    SERVICO ||--o{ OS_SERVICO : referenciado
+
+    ORDEM_SERVICO ||--o{ OS_PECA : possui
+    PECA ||--o{ OS_PECA : referenciado
+
+    TABELA_REFERENCIA_MAO_OBRA ||--o{ SERVICO : define_valor
